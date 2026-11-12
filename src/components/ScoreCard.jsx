@@ -5,7 +5,7 @@ function ScoreCard({ match, isLive }) {
   return (
     <section className="card">
       <div className="card-header">
-        <span>{isLive ? 'Live now' : 'Live example'}</span>
+        <span>{isLive ? 'Just now' : 'Live example'}</span>
         <span>{match.isTiebreak ? 'Tiebreak' : `Set ${sets}`}</span>
       </div>
 

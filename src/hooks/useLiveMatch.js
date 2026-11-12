@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export const DEMO = {
   id: 'demo',
@@ -19,13 +19,15 @@ function normalize(m) {
     server: s.server ?? null,
     isTiebreak: s.is_tiebreak ?? false,
     tournament: m.tournament,
+    ageSeconds: s.age_seconds ?? null,
+    stale: s.stale ?? false,
   }
 }
 
 const usable = (x) => x.names[0] && x.names[1] && x.games?.[0]?.length && x.points
 
-const KEY = 'courtside-live-match'
-const TTL = 10 * 60 * 1000
+const POLL_MS = 30_000        // how often to re-check the API
+const STALE_MS = 8 * 60_000   // switch matches after this long with no score change
 
 function readCache() {
   try {
@@ -36,23 +38,41 @@ function readCache() {
 }
 
 export function useLiveMatch() {
-  const [match, setMatch] = useState(() => readCache() ?? DEMO)
-  const [isLive, setIsLive] = useState(() => readCache() !== null)
+  const [match, setMatch] = useState(DEMO)
+  const [isLive, setIsLive] = useState(false)
+  const currentId = useRef(null)
 
   useEffect(() => {
-    if (readCache()) return
     let cancelled = false
-    fetch('/api/matches')
-      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
-      .then((json) => {
-        const found = (json.data ?? []).map(normalize).find(usable)
-        if (!found || cancelled) return
-        setMatch(found)
+
+    async function poll() {
+      try {
+        const r = await fetch('/api/matches')
+        if (!r.ok || cancelled) return
+
+        const list = ((await r.json()).data ?? [])
+          .map(normalize)
+          .filter(usable)
+          .map((m) => ({ ...m, age: (m.ageSeconds ?? Infinity) * 1000 }))
+
+        const current = list.find((m) => m.id === currentId.current)
+        let next = current
+        if (!current || current.age > STALE_MS) {
+          next =
+            list.filter((m) => m.age <= STALE_MS).sort((a, b) => a.age - b.age)[0]
+            ?? current
+        }
+        if (!next || cancelled) return
+
+        currentId.current = next.id
+        setMatch(next)
         setIsLive(true)
-        try { sessionStorage.setItem(KEY, JSON.stringify({ t: Date.now(), data: found })) } catch {}
-      })
-      .catch(() => {})
-    return () => { cancelled = true }
+      } catch {}
+    }
+
+    poll()
+    const t = setInterval(poll, POLL_MS)
+    return () => { cancelled = true; clearInterval(t) }
   }, [])
 
   return { match, isLive }
