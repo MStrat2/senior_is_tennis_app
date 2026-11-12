@@ -1,3 +1,8 @@
+//
+// About page for the tennis app.
+// Placeholder for now.
+//
+
 function About() {
   return (
     <main>

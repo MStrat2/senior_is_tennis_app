@@ -1,3 +1,12 @@
+//
+// Creates the Landing Page for the tennis app.
+// Splits the site into two halves using hero.
+// The left half has the title, the lead paragraph, and two buttons.
+// The right half has the ScoreCard component. 
+// Start learning button links to /learn
+// Watch a 2-minute intro button links to /watch
+//
+
 import { Link } from 'react-router-dom'
 import { useLiveMatch } from '../hooks/useLiveMatch'
 import ScoreCard from '../components/ScoreCard'

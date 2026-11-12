@@ -1,3 +1,8 @@
+//
+// Placeholder page for the Watch live page.
+// This page might be scrapped soon.
+//
+
 function watch() {
   return (
     <main>

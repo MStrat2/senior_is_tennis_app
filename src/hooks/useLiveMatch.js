@@ -1,3 +1,9 @@
+//
+//
+// Starts by showing DEMO in the scorecard(matches.js, ScoreCard.jsx), then polls the API 
+// once every 30 seconds to get the latest live match data. 
+//
+//
 import { useEffect, useRef, useState } from 'react'
 
 export const DEMO = {
@@ -26,16 +32,8 @@ function normalize(m) {
 
 const usable = (x) => x.names[0] && x.names[1] && x.games?.[0]?.length && x.points
 
-const POLL_MS = 30_000        // how often to re-check the API
-const STALE_MS = 8 * 60_000   // switch matches after this long with no score change
-
-function readCache() {
-  try {
-    const c = JSON.parse(sessionStorage.getItem(KEY))
-    if (c && Date.now() - c.t < TTL) return c.data
-  } catch {}
-  return null
-}
+const POLL_MS = 30_000
+const STALE_MS = 8 * 60_000
 
 export function useLiveMatch() {
   const [match, setMatch] = useState(DEMO)
