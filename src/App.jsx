@@ -19,7 +19,7 @@ function App() {
         <nav className="nav-links">
           <Link to="/scoring">Scoring</Link>
           <Link to="/etiquette">Etiquette</Link>
-          <Link to="/watch">Watch live</Link>
+          <Link to="/watch">Watch Live</Link>
           <Link to="/about">About</Link>
         </nav>
         <button className="btn-signin">Sign in</button>
