@@ -1,3 +1,8 @@
+//
+//
+// Draws the header on every page, and sets up the routes for the app. 
+//
+//
 import { Routes, Route, Link } from 'react-router-dom'
 import Home from './pages/Home'
 import About from './pages/About'
