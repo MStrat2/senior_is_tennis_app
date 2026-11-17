@@ -6,6 +6,9 @@
 import { Routes, Route, Link } from 'react-router-dom'
 import Home from './pages/Home'
 import About from './pages/About'
+import Scoring from './pages/Scoring'
+import Rules from './pages/Rules'
+import Etiquette from './pages/Etiquette'
 import './App.css'
 
 function App() {
@@ -18,8 +21,9 @@ function App() {
         </Link>
         <nav className="nav-links">
           <Link to="/scoring">Scoring</Link>
+          <Link to="/rules">Rules</Link>
           <Link to="/etiquette">Etiquette</Link>
-          <Link to="/watch">Watch Live</Link>
+          <Link to="/watch">Live Scoring</Link>
           <Link to="/about">About</Link>
         </nav>
         <button className="btn-signin">Sign in</button>
@@ -27,6 +31,9 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/scoring" element={<Scoring />} />
+        <Route path="/rules" element={<Rules />} />
+        <Route path="/etiquette" element={<Etiquette />} />
         <Route path="/about" element={<About />} />
       </Routes>
     </>
